@@ -147,12 +147,9 @@ Opens a window with a list of changed files on the current branch (including sta
 The fork point of the current branch is determined with the following command:
 
 ```sh
-git show-branch | \
-    sed "s/].*//" | \
-    grep "*" | \
-    grep -v "$(git rev-parse --abbrev-ref HEAD)" | \
-    head -n1 | \
-    sed "s/^.*\\[//"
+git for-each-ref --format='%(refname:short)' --sort=-committerdate refs/heads/ |\
+	grep -v "$(git rev-parse --abbrev-ref HEAD)" |\
+	head -n1
 ```
 
 Note: this only works if there is already a commit on the current branch, otherwise the base branch can not be detected.

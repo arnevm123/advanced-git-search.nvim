@@ -144,13 +144,10 @@ M.file_name_on_commit = file_name_on_commit
 
 --- returns the base branch of a branch (where fork_point is)
 M.base_branch = function()
-    local command = [[git show-branch |\
-      sed "s/].*//" |\
-      grep "*" |\
-      grep -v "$(git rev-parse --abbrev-ref HEAD)" |\
-      head -n1 |\
-      sed "s/^.*\\[//"]]
-
+    local command =
+        [[ git for-each-ref --format='%(refname:short)' --sort=-committerdate refs/heads/ |\
+	grep -v "$(git rev-parse --abbrev-ref HEAD)" |\
+	head -n1 ]]
     local output = command_util.execute(command)
 
     return string.gsub(output, "\n", "")
